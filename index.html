@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workout Selector</title>
+<style>
+/* Reset & basics */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+/* Heading */
+h1 {
+  margin-bottom: 50px;
+  font-size: 2.5em;
+}
+
+/* Circle container */
+.circle-container {
+  display: flex;
+  gap: 50px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Circle buttons */
+.circle-btn {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: #ff3c3c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+  font-size: 1.5em;
+  font-weight: bold;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.circle-btn:hover {
+  transform: scale(1.1);
+  background: #ff6060;
+}
+</style>
+</head>
+<body>
+
+<h1>🏋️ Workout Selector</h1>
+
+<div class="circle-container">
+  <a href="pushup.html" class="circle-btn">Push-ups</a>
+  <a href="squat.html" class="circle-btn">Squats</a>
+</div>
+
+</body>
+</html>

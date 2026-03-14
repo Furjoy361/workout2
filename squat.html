@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Push-up Counter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Push-up Counter 💪</h1>
+
+<div id="reps">Reps: 0</div>
+
+<!-- Camera -->
+<video id="camera" autoplay playsinline muted></video>
+<canvas id="output"></canvas>
+
+<button id="startBtn">START</button>
+<button id="stopBtn">STOP</button>
+
+<!-- MediaPipe Pose AI -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+
+<!-- Push-up counting script -->
+<script src="pushup.js"></script>
+
+</body>
+</html>
