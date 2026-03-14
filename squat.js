@@ -3,9 +3,8 @@ let running = false;
 let squatStage = null; // "down" or "up"
 let reps = 0;
 
-// Load audio (can be a start sound as well as rep sound)
-const startSound = new Audio('assets/1.mp3'); // plays when START clicked
-const repSound = new Audio('assets/1.mp3');   // plays when a rep is counted
+// Load rep sound after user clicks START (ensures browser allows audio)
+let repSound = null;
 
 // Show initial reps
 document.getElementById("reps").innerText = `Reps: ${reps}`;
@@ -18,9 +17,8 @@ document.getElementById("startBtn").onclick = function(){
     running = true;
     document.getElementById("reps").innerText = `Reps: ${reps}`; // reset display
 
-    // Play start sound
-    startSound.currentTime = 0;
-    startSound.play();
+    // Load sound after first user interaction
+    repSound = new Audio('assets/1.mp3');
   }
 }
 
@@ -59,13 +57,6 @@ function calculateAngle(A, B, C){
   return angleRad * (180/Math.PI);
 }
 
-function flashGreen(){
-  canvasElement.style.backgroundColor = "rgba(0,255,0,0.5)";
-  setTimeout(() => {
-    canvasElement.style.backgroundColor = "transparent";
-  }, 500); // green flash for 0.5 seconds
-}
-
 function onResults(results){
   canvasCtx.save();
   canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
@@ -98,12 +89,17 @@ function onResults(results){
       reps++;
       document.getElementById("reps").innerText = `Reps: ${reps}`;
 
-      // Play rep sound
-      repSound.currentTime = 0;
-      repSound.play();
+      // Play sound
+      if(repSound){
+        repSound.currentTime = 0; // restart sound if still playing
+        repSound.play();
+      }
 
-      // Flash green to indicate a counted rep
-      flashGreen();
+      // Flash green background for 0.5s
+      document.body.style.backgroundColor = "rgba(0,255,0,0.5)";
+      setTimeout(() => {
+        document.body.style.backgroundColor = ""; // revert back
+      }, 500);
     }
   }
 
