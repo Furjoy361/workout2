@@ -3,6 +3,9 @@ let running = false;
 let pushupStage = null; // "down" or "up"
 let reps = 0;
 
+// Load rep sound after user clicks START (ensures browser allows audio)
+let repSound = null;
+
 // Show initial reps
 document.getElementById("reps").innerText = `Reps: ${reps}`;
 
@@ -12,38 +15,16 @@ document.getElementById("startBtn").onclick = function(){
     reps = 0;
     pushupStage = null;
     running = true;
+    document.getElementById("reps").innerText = `Reps: ${reps}`; // reset display
+
+    // Load sound after first user interaction
+    repSound = new Audio('assets/1.mp3');
   }
 }
 
 document.getElementById("stopBtn").onclick = function(){
   running = false;
   alert(`You completed ${reps} push-ups!`);
-}
-
-// -------------------- RANDOM EVENT (Optional, can keep or remove) --------------------
-function startRandomEvent(){
-  setTimeout(showEvent,10000);
-}
-
-function showEvent(){
-  let box = document.getElementById("eventBox");
-  box.classList.remove("hidden");
-
-  let clicked = false;
-
-  document.getElementById("tapBtn").onclick = function(){
-    clicked = true;
-    box.classList.add("hidden");
-    startRandomEvent();
-  }
-
-  setTimeout(function(){
-    if(!clicked){
-      alert("You failed the event!");
-      running = false;
-    }
-    box.classList.add("hidden");
-  },5000);
 }
 
 // -------------------- MEDIA PIPE CAMERA & POSE --------------------
@@ -81,7 +62,7 @@ function onResults(results){
   canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
   canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-  if(results.poseLandmarks){
+  if(results.poseLandmarks && running){
     drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {color:'#00FF00', lineWidth:4});
     drawLandmarks(canvasCtx, results.poseLandmarks, {color:'#FF0000', lineWidth:2});
 
@@ -99,14 +80,26 @@ function onResults(results){
 
     const avgAngle = (leftAngle + rightAngle) / 2;
 
-    // Simple push-up logic: down < 90, up > 160
+    // Only count push-ups after START clicked
     if(avgAngle < 90 && pushupStage !== "down"){
       pushupStage = "down";
     }
     if(avgAngle > 160 && pushupStage === "down"){
       pushupStage = "up";
       reps++;
-      document.getElementById("reps").innerText = `Reps: ${reps}`; // update visible reps
+      document.getElementById("reps").innerText = `Reps: ${reps}`;
+
+      // Play sound
+      if(repSound){
+        repSound.currentTime = 0; // restart sound if still playing
+        repSound.play();
+      }
+
+      // Flash green background for 0.5s
+      document.body.style.backgroundColor = "rgba(0,255,0,0.5)";
+      setTimeout(() => {
+        document.body.style.backgroundColor = ""; // revert back
+      }, 500);
     }
   }
 
