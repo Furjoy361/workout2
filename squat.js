@@ -3,6 +3,9 @@ let running = false;
 let squatStage = null; // "down" or "up"
 let reps = 0;
 
+// Load rep sound
+const repSound = new Audio('assets/1.mp3');
+
 // Show initial reps
 document.getElementById("reps").innerText = `Reps: ${reps}`;
 
@@ -82,6 +85,8 @@ function onResults(results){
       squatStage = "up";
       reps++;
       document.getElementById("reps").innerText = `Reps: ${reps}`;
+      repSound.currentTime = 0; // restart sound if still playing
+      repSound.play();          // play sound for every rep
     }
   }
 
