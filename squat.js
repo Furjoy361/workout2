@@ -1,6 +1,6 @@
 // -------------------- REPS LOGIC --------------------
 let running = false;
-let pushupStage = null; // "down" or "up"
+let squatStage = null; // "down" or "up"
 let reps = 0;
 
 // Show initial reps
@@ -10,40 +10,15 @@ document.getElementById("reps").innerText = `Reps: ${reps}`;
 document.getElementById("startBtn").onclick = function(){
   if(!running){
     reps = 0;
-    pushupStage = null;
+    squatStage = null;
     running = true;
+    document.getElementById("reps").innerText = `Reps: ${reps}`; // reset display
   }
 }
 
 document.getElementById("stopBtn").onclick = function(){
   running = false;
-  alert(`You completed ${reps} push-ups!`);
-}
-
-// -------------------- RANDOM EVENT (Optional, can keep or remove) --------------------
-function startRandomEvent(){
-  setTimeout(showEvent,10000);
-}
-
-function showEvent(){
-  let box = document.getElementById("eventBox");
-  box.classList.remove("hidden");
-
-  let clicked = false;
-
-  document.getElementById("tapBtn").onclick = function(){
-    clicked = true;
-    box.classList.add("hidden");
-    startRandomEvent();
-  }
-
-  setTimeout(function(){
-    if(!clicked){
-      alert("You failed the event!");
-      running = false;
-    }
-    box.classList.add("hidden");
-  },5000);
+  alert(`You completed ${reps} squats!`);
 }
 
 // -------------------- MEDIA PIPE CAMERA & POSE --------------------
@@ -65,7 +40,7 @@ pose.setOptions({
 
 pose.onResults(onResults);
 
-// -------------------- PUSH-UP REPS COUNT --------------------
+// -------------------- SQUAT REPS COUNT --------------------
 function calculateAngle(A, B, C){
   const AB = {x: B.x - A.x, y: B.y - A.y};
   const CB = {x: B.x - C.x, y: B.y - C.y};
@@ -81,32 +56,32 @@ function onResults(results){
   canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
   canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-  if(results.poseLandmarks){
+  if(results.poseLandmarks && running){
     drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {color:'#00FF00', lineWidth:4});
     drawLandmarks(canvasCtx, results.poseLandmarks, {color:'#FF0000', lineWidth:2});
 
-    // Push-up detection (using elbows)
-    const leftShoulder = results.poseLandmarks[11];
-    const leftElbow = results.poseLandmarks[13];
-    const leftWrist = results.poseLandmarks[15];
+    // Squat detection (using knees)
+    const leftHip = results.poseLandmarks[23];
+    const leftKnee = results.poseLandmarks[25];
+    const leftAnkle = results.poseLandmarks[27];
 
-    const rightShoulder = results.poseLandmarks[12];
-    const rightElbow = results.poseLandmarks[14];
-    const rightWrist = results.poseLandmarks[16];
+    const rightHip = results.poseLandmarks[24];
+    const rightKnee = results.poseLandmarks[26];
+    const rightAnkle = results.poseLandmarks[28];
 
-    const leftAngle = calculateAngle(leftShoulder, leftElbow, leftWrist);
-    const rightAngle = calculateAngle(rightShoulder, rightElbow, rightWrist);
+    const leftAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
+    const rightAngle = calculateAngle(rightHip, rightKnee, rightAnkle);
 
     const avgAngle = (leftAngle + rightAngle) / 2;
 
-    // Simple push-up logic: down < 90, up > 160
-    if(avgAngle < 90 && pushupStage !== "down"){
-      pushupStage = "down";
+    // Only count squats after START clicked
+    if(avgAngle < 100 && squatStage !== "down"){
+      squatStage = "down";
     }
-    if(avgAngle > 160 && pushupStage === "down"){
-      pushupStage = "up";
+    if(avgAngle > 150 && squatStage === "down"){
+      squatStage = "up";
       reps++;
-      document.getElementById("reps").innerText = `Reps: ${reps}`; // update visible reps
+      document.getElementById("reps").innerText = `Reps: ${reps}`;
     }
   }
 
