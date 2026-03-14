@@ -3,8 +3,8 @@ let running = false;
 let squatStage = null; // "down" or "up"
 let reps = 0;
 
-// Load rep sound
-const repSound = new Audio('assets/1.mp3');
+// Load rep sound after user clicks START (ensures browser allows audio)
+let repSound = null;
 
 // Show initial reps
 document.getElementById("reps").innerText = `Reps: ${reps}`;
@@ -16,6 +16,9 @@ document.getElementById("startBtn").onclick = function(){
     squatStage = null;
     running = true;
     document.getElementById("reps").innerText = `Reps: ${reps}`; // reset display
+
+    // Load sound after first user interaction
+    repSound = new Audio('assets/1.mp3');
   }
 }
 
@@ -85,8 +88,10 @@ function onResults(results){
       squatStage = "up";
       reps++;
       document.getElementById("reps").innerText = `Reps: ${reps}`;
-      repSound.currentTime = 0; // restart sound if still playing
-      repSound.play();          // play sound for every rep
+      if(repSound){
+        repSound.currentTime = 0; // restart sound if still playing
+        repSound.play();          // play sound for every rep
+      }
     }
   }
 
