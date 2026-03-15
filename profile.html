@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Profile</title>
+
+<style>
+
+body{
+background:#111;
+color:white;
+font-family:Arial;
+text-align:center;
+padding-top:60px;
+}
+
+.stat{
+font-size:22px;
+margin:15px;
+}
+
+button{
+padding:12px 20px;
+margin:10px;
+font-size:16px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1 id="welcome">Loading...</h1>
+
+<div class="stat">Pushups: <span id="pushups">0</span></div>
+<div class="stat">Squats: <span id="squats">0</span></div>
+<div class="stat">Best Plank: <span id="plank">0</span></div>
+
+<br>
+
+<button onclick="location.href='pushup.html'">Start Pushups</button>
+<button onclick="location.href='squat.html'">Start Squats</button>
+<button onclick="location.href='plank.html'">Start Plank</button>
+
+<br><br>
+
+<button id="logout">Logout</button>
+
+<script type="module">
+
+import { auth } from "./firebase.js";
+
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+
+import { db } from "./firebase.js";
+
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+
+onAuthStateChanged(auth, async (user)=>{
+
+if(user){
+
+document.getElementById("welcome").innerText =
+"Welcome " + user.displayName;
+
+const docRef = doc(db,"users",user.uid);
+
+const docSnap = await getDoc(docRef);
+
+if(docSnap.exists()){
+
+const data = docSnap.data();
+
+document.getElementById("pushups").innerText = data.pushups;
+document.getElementById("squats").innerText = data.squats;
+document.getElementById("plank").innerText = data.plank;
+
+}
+
+}
+
+else{
+
+window.location.href="login.html";
+
+}
+
+});
+
+document.getElementById("logout").onclick=()=>{
+signOut(auth);
+};
+
+</script>
+
+</body>
+
+</html>
