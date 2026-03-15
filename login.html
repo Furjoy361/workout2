@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <title>Plank Rival Login</title>
+<title>Plank Rival Login</title>
 </head>
 
 <body>
@@ -15,12 +14,13 @@
 
 import { loginWithGoogle } from "./auth.js";
 
-document.getElementById("loginBtn").addEventListener("click", () => {
+const btn = document.getElementById("loginBtn");
+
+btn.addEventListener("click", () => {
   loginWithGoogle();
 });
 
 </script>
 
 </body>
-
 </html>
