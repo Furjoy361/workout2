@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Plank Rival Login</title>
+</head>
+
+<body>
+
+<h1>Plank Rival 👑</h1>
+
+<button id="loginBtn">Sign in with Google</button>
+
+<script type="module">
+
+import { loginWithGoogle } from "./auth.js";
+
+document.getElementById("loginBtn").addEventListener("click", () => {
+  loginWithGoogle();
+});
+
+</script>
+
+</body>
+
+</html>
