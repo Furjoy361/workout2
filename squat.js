@@ -1,9 +1,12 @@
+import { addSquats } from "./database.js";
+import { auth } from "./firebase.js";
+
 // -------------------- REPS LOGIC --------------------
 let running = false;
 let squatStage = null; // "down" or "up"
 let reps = 0;
 
-// Load rep sound after user clicks START (ensures browser allows audio)
+// Load rep sound after user clicks START
 let repSound = null;
 
 // Show initial reps
@@ -15,16 +18,27 @@ document.getElementById("startBtn").onclick = function(){
     reps = 0;
     squatStage = null;
     running = true;
-    document.getElementById("reps").innerText = `Reps: ${reps}`; // reset display
+
+    document.getElementById("reps").innerText = `Reps: ${reps}`;
 
     // Load sound after first user interaction
     repSound = new Audio('assets/1.mp3');
   }
 }
 
-document.getElementById("stopBtn").onclick = function(){
+document.getElementById("stopBtn").onclick = async function(){
+
   running = false;
+
+  const user = auth.currentUser;
+
+  if(user){
+    await addSquats(user.uid, reps);
+    console.log("Squats saved to database");
+  }
+
   alert(`You completed ${reps} squats!`);
+
 }
 
 // -------------------- MEDIA PIPE CAMERA & POSE --------------------
@@ -50,23 +64,33 @@ pose.onResults(onResults);
 function calculateAngle(A, B, C){
   const AB = {x: B.x - A.x, y: B.y - A.y};
   const CB = {x: B.x - C.x, y: B.y - C.y};
+
   const dot = AB.x*CB.x + AB.y*CB.y;
   const magAB = Math.sqrt(AB.x*AB.x + AB.y*AB.y);
   const magCB = Math.sqrt(CB.x*CB.x + CB.y*CB.y);
+
   const angleRad = Math.acos(dot/(magAB*magCB));
+
   return angleRad * (180/Math.PI);
 }
 
 function onResults(results){
+
   canvasCtx.save();
-  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-  canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+  canvasCtx.clearRect(0,0,canvasElement.width,canvasElement.height);
+
+  canvasCtx.drawImage(results.image,0,0,canvasElement.width,canvasElement.height);
 
   if(results.poseLandmarks && running){
-    drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {color:'#00FF00', lineWidth:4});
-    drawLandmarks(canvasCtx, results.poseLandmarks, {color:'#FF0000', lineWidth:2});
 
-    // Squat detection (using knees)
+    drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS,
+      {color:'#00FF00', lineWidth:4});
+
+    drawLandmarks(canvasCtx, results.poseLandmarks,
+      {color:'#FF0000', lineWidth:2});
+
+    // Squat detection
     const leftHip = results.poseLandmarks[23];
     const leftKnee = results.poseLandmarks[25];
     const leftAnkle = results.poseLandmarks[27];
@@ -75,41 +99,50 @@ function onResults(results){
     const rightKnee = results.poseLandmarks[26];
     const rightAnkle = results.poseLandmarks[28];
 
-    const leftAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
-    const rightAngle = calculateAngle(rightHip, rightKnee, rightAnkle);
+    const leftAngle = calculateAngle(leftHip,leftKnee,leftAnkle);
+    const rightAngle = calculateAngle(rightHip,rightKnee,rightAnkle);
 
     const avgAngle = (leftAngle + rightAngle) / 2;
 
-    // Only count squats after START clicked
     if(avgAngle < 100 && squatStage !== "down"){
       squatStage = "down";
     }
+
     if(avgAngle > 150 && squatStage === "down"){
+
       squatStage = "up";
+
       reps++;
+
       document.getElementById("reps").innerText = `Reps: ${reps}`;
 
-      // Play sound
       if(repSound){
-        repSound.currentTime = 0; // restart sound if still playing
+        repSound.currentTime = 0;
         repSound.play();
       }
 
-      // Flash green background for 0.5s
       document.body.style.backgroundColor = "rgba(0,255,0,0.5)";
-      setTimeout(() => {
-        document.body.style.backgroundColor = ""; // revert back
-      }, 500);
+
+      setTimeout(()=>{
+        document.body.style.backgroundColor="";
+      },500);
     }
+
   }
 
   canvasCtx.restore();
 }
 
 // -------------------- CAMERA START --------------------
-const camera = new Camera(videoElement, {
-  onFrame: async () => await pose.send({image: videoElement}),
-  width: 640,
-  height: 480
+const camera = new Camera(videoElement,{
+
+  onFrame: async ()=>{
+    await pose.send({image: videoElement});
+  },
+
+  width:640,
+  height:480
+
 });
+
 camera.start();
