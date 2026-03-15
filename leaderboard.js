@@ -12,31 +12,39 @@ const leaderboard = document.getElementById("leaderboard");
 
 async function loadLeaderboard(){
 
-const q = query(
-collection(db,"users"),
-orderBy("squats","desc"),
-limit(10)
-);
+  leaderboard.innerHTML = "";
 
-const querySnapshot = await getDocs(q);
+  const q = query(
+    collection(db,"users"),
+    orderBy("squats","desc"),
+    limit(10)
+  );
 
-let rank = 1;
+  const querySnapshot = await getDocs(q);
 
-querySnapshot.forEach((doc)=>{
+  let rank = 1;
 
-const data = doc.data();
+  querySnapshot.forEach((doc)=>{
 
-const div = document.createElement("div");
+    const data = doc.data();
 
-div.className = "player";
+    // Fix undefined name
+    const name = data.name || "Player";
 
-div.innerText = `${rank}. ${data.name} — ${data.squats} squats`;
+    // Fix undefined squats
+    const squats = data.squats || 0;
 
-leaderboard.appendChild(div);
+    const div = document.createElement("div");
 
-rank++;
+    div.className = "player";
 
-});
+    div.innerText = `${rank}. ${name} — ${squats} squats`;
+
+    leaderboard.appendChild(div);
+
+    rank++;
+
+  });
 
 }
 
