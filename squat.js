@@ -33,14 +33,19 @@ document.getElementById("stopBtn").onclick = async function(){
   const user = auth.currentUser;
 
   if(user){
+
     await addSquats(user.uid, reps);
+
     console.log("Squats saved to database");
+
   }
 
   alert(`You completed ${reps} squats!`);
 
-}
+  // Redirect to profile
+  window.location.href = "profile.html";
 
+}
 // -------------------- MEDIA PIPE CAMERA & POSE --------------------
 const videoElement = document.getElementById('camera');
 const canvasElement = document.getElementById('output');
