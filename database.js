@@ -1,49 +1,38 @@
 import { db } from "./firebase.js";
 
 import {
-  doc,
-  setDoc,
-  getDoc
+doc,
+setDoc,
+getDoc
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
+export async function addSquats(uid, reps, name){
 
-// -------------------- CREATE USER --------------------
-export async function createUser(user){
+const userRef = doc(db,"users",uid);
 
-  const userRef = doc(db,"users",user.uid);
+const docSnap = await getDoc(userRef);
 
-  const docSnap = await getDoc(userRef);
+if(docSnap.exists()){
 
-  // If user does not exist, create it
-  if(!docSnap.exists()){
+const data = docSnap.data();
 
-    await setDoc(userRef,{
+await setDoc(userRef,{
+name: name,
+squats: (data.squats || 0) + reps
+},{merge:true});
 
-      name: user.displayName,
-      pushups: 0,
-      squats: 0,
-      plank: 0
+}
+else{
 
-    });
-
-    console.log("User profile created");
-
-  }
+await setDoc(userRef,{
+name: name,
+squats: reps,
+pushups: 0,
+plank: 0
+});
 
 }
 
-
-// -------------------- ADD SQUATS --------------------
-export async function addSquats(uid, reps){
-
-  const userRef = doc(db,"users",uid);
-
-  await setDoc(userRef,{
-
-    squats: reps
-
-  }, { merge: true });   // important so other fields stay
-
-  console.log("Squats updated successfully");
+console.log("Database write successful");
 
 }
