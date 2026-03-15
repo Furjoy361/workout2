@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Push-up Counter</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Squats Counter</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <h1>Squats Counter 💪</h1>
@@ -19,14 +20,39 @@
 <button id="startBtn">START</button>
 <button id="stopBtn">STOP</button>
 
-<!-- MediaPipe Pose AI -->
+<!-- MediaPipe Pose -->
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
 
-<!-- Push-up counting script -->
+<!-- Squat Counter Logic -->
 <script src="squat.js"></script>
+
+<!-- Firebase Save Logic -->
+<script type="module">
+
+import { auth } from "./firebase.js";
+import { addSquats } from "./database.js";
+
+const stopBtn = document.getElementById("stopBtn");
+
+stopBtn.addEventListener("click", async () => {
+
+const user = auth.currentUser;
+
+if(user){
+
+// reps variable comes from squat.js
+await addSquats(user.uid, reps);
+
+console.log("Squats saved:", reps);
+
+}
+
+});
+
+</script>
 
 </body>
 </html>
