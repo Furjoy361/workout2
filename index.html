@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Workout Selector</title>
 <style>
+
 /* Reset & basics */
 body {
   margin: 0;
@@ -22,8 +23,24 @@ body {
 
 /* Heading */
 h1 {
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   font-size: 2.5em;
+}
+
+/* Login button */
+.login-btn {
+  margin-bottom: 40px;
+  padding: 12px 25px;
+  background: #4285F4;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 1.1em;
+  transition: background 0.2s;
+}
+
+.login-btn:hover {
+  background: #5a95ff;
 }
 
 /* Circle container */
@@ -54,11 +71,15 @@ h1 {
   transform: scale(1.1);
   background: #ff6060;
 }
+
 </style>
 </head>
 <body>
 
 <h1>🏋️ Workout Selector</h1>
+
+<!-- Login button -->
+<a href="login.html" class="login-btn">Login / Sign Up</a>
 
 <div class="circle-container">
   <a href="pushup.html" class="circle-btn">Push-ups</a>
