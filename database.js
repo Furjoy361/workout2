@@ -1,14 +1,19 @@
 import { db } from "./firebase.js";
-import { doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+import {
+  doc,
+  setDoc,
+  increment
+} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 export async function addSquats(uid, reps){
 
-const userRef = doc(db,"users",uid);
+  const userRef = doc(db,"users",uid);
 
-await updateDoc(userRef,{
-squats: increment(reps)
-});
+  await setDoc(userRef,{
+    squats: increment(reps)
+  },{ merge:true });
 
-console.log("Squats updated");
+  console.log("Squats updated");
 
 }
