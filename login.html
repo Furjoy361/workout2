@@ -8,72 +8,126 @@
 <style>
 
 /* Page layout */
-body{
+*{
 margin:0;
 padding:0;
-font-family:Arial, sans-serif;
-background:#111;
-color:white;
+box-sizing:border-box;
+font-family: Arial, sans-serif;
+}
+
+/* PAGE */
+
+body{
+background:#FFFFFF;
+color:#222222;
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
+min-height:100vh;
+padding:20px;
 }
 
-/* Card container */
+/* LOGIN CARD */
+
 .container{
-background:#1e1e1e;
-padding:40px;
-border-radius:12px;
-box-shadow:0 10px 25px rgba(0,0,0,0.5);
-text-align:center;
-width:90%;
-max-width:400px;
-}
-
-/* Title */
-h1{
-margin-bottom:30px;
-font-size:2rem;
-}
-
-/* Google button */
-#loginBtn{
-background:#4285F4;
-border:none;
-padding:14px 20px;
-color:white;
-font-size:16px;
-border-radius:6px;
-cursor:pointer;
 width:100%;
-transition:background 0.2s;
+max-width:420px;
+
+background:#F5F5F5;
+
+padding:45px 30px;
+
+border-radius:20px;
+
+box-shadow:0 15px 40px rgba(0,0,0,0.1);
+
+text-align:center;
+
+animation:fadeSlide 1s ease forwards;
+}
+
+/* TITLE */
+
+h1{
+font-size:34px;
+font-weight:700;
+margin-bottom:30px;
+
+background:linear-gradient(90deg,#FF6B2B,#FF4C4C);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+/* GOOGLE BUTTON */
+
+#loginBtn{
+width:100%;
+
+padding:18px;
+
+border:none;
+border-radius:35px;
+
+font-size:18px;
+font-weight:bold;
+
+cursor:pointer;
+
+background:linear-gradient(145deg,#FF6B2B,#FF4C4C);
+color:white;
+
+box-shadow:0 12px 35px rgba(255,107,43,0.35);
+
+transition:0.25s;
 }
 
 #loginBtn:hover{
-background:#5a95ff;
+transform:scale(1.03);
+box-shadow:0 15px 40px rgba(255,76,76,0.6);
 }
 
-/* Small text */
+/* SUBTEXT */
+
 p{
-margin-top:20px;
-font-size:14px;
-color:#aaa;
+margin-top:22px;
+font-size:15px;
+color:#666666;
 }
 
-/* Mobile adjustments */
-@media (max-width:500px){
+/* ANIMATION */
+
+@keyframes fadeSlide{
+
+0%{
+opacity:0;
+transform:translateY(25px);
+}
+
+100%{
+opacity:1;
+transform:translateY(0);
+}
+
+/* MOBILE */
+
+}
+
+@media(max-width:600px){
 
 .container{
-padding:30px 20px;
+padding:40px 25px;
 }
 
 h1{
-font-size:1.7rem;
+font-size:30px;
+}
+
+#loginBtn{
+font-size:17px;
+padding:16px;
 }
 
 }
-
 </style>
 
 </head>
