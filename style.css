@@ -1,67 +1,127 @@
-body{
-  font-family: Arial, sans-serif;
-  text-align:center;
-  background:#111;
-  color:white;
-  margin:0;
-  padding:20px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family: Arial, sans-serif;
 }
+
+body{
+background:#FFFFFF;
+color:#222222;
+min-height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+/* TITLE */
 
 h1{
-  margin-top:10px;
+margin-top:25px;
+font-size:32px;
+font-weight:700;
+text-align:center;
+
+background:linear-gradient(90deg,#FF6B2B,#FF4C4C);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+animation:fadeSlide 1s ease forwards;
+opacity:0;
 }
 
-#timer{
-  font-size:70px;
-  margin:30px 0;
-  font-weight:bold;
+/* REPS DISPLAY */
+
+#reps{
+margin-top:15px;
+font-size:26px;
+font-weight:bold;
+color:#FF4C4C;
+background:#F5F5F5;
+padding:10px 25px;
+border-radius:12px;
+box-shadow:0 6px 15px rgba(0,0,0,0.08);
+animation:fadeSlide 1.3s ease forwards;
+opacity:0;
 }
 
 /* CAMERA */
-video, canvas{
-  width:90%;
-  max-width:400px;
-  border-radius:12px;
-  margin:10px 0;
+
+#camera{
+margin-top:25px;
+width:90%;
+max-width:450px;
+border-radius:18px;
+box-shadow:0 12px 35px rgba(0,0,0,0.15);
 }
 
-/* BUTTONS */
+/* CANVAS OUTPUT */
+
+#output{
+position:absolute;
+top:0;
+left:0;
+}
+
+/* BUTTON AREA */
+
 button{
-  padding:18px 25px;
-  font-size:20px;
-  margin:10px;
-  border:none;
-  border-radius:10px;
-  background:#ff3c3c;
-  color:white;
-  width:90%;
-  max-width:300px;
-  cursor:pointer;
+margin-top:20px;
+width:200px;
+padding:14px;
+border:none;
+border-radius:30px;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+
+background:linear-gradient(145deg,#FF6B2B,#FF4C4C);
+color:white;
+
+box-shadow:0 10px 30px rgba(255,107,43,0.35);
+transition:0.25s;
 }
 
-button:active{
-  transform:scale(0.96);
+button:hover{
+transform:scale(1.05);
+box-shadow:0 15px 40px rgba(255,76,76,0.6);
 }
 
-/* EVENT BOX */
-#eventBox{
-  margin-top:20px;
-  padding:20px;
-  background:#222;
-  border-radius:10px;
-  width:90%;
-  max-width:300px;
-  font-size:22px;
-  font-weight:bold;
-  border:2px solid #ff3c3c;
+#stopBtn{
+margin-bottom:40px;
 }
 
-/* HIDDEN CLASS */
-.hidden{
-  display:none;
+/* ANIMATION */
+
+@keyframes fadeSlide{
+
+0%{
+opacity:0;
+transform:translateY(25px);
+}
+
+100%{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+h1{
+font-size:26px;
+}
+
+#reps{
+font-size:22px;
+}
+
+button{
+width:170px;
+font-size:16px;
+}
+
 }
