@@ -6,17 +6,150 @@
 
 <style>
 
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family: Arial, sans-serif;
+}
+
 body{
-background:#111;
-color:white;
-font-family:Arial;
+background:#FFFFFF;
+color:#222222;
+min-height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+padding:30px 15px;
+}
+
+/* TITLE */
+
+h1{
+font-size:34px;
+font-weight:700;
+margin-bottom:30px;
 text-align:center;
-padding-top:50px;
+
+background:linear-gradient(90deg,#FF6B2B,#FF4C4C);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+animation:fadeSlide 1s ease forwards;
+opacity:0;
+}
+
+/* LEADERBOARD */
+
+#leaderboard{
+width:100%;
+display:flex;
+flex-direction:column;
+gap:18px;
+}
+
+/* PLAYER CARD */
+
+.player{
+width:100%;
+background:#F5F5F5;
+padding:22px 24px;
+border-radius:18px;
+
+font-size:22px;
+font-weight:600;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+
+animation:fadeSlide 0.8s ease forwards;
+}
+
+/* TOP PLAYERS */
+
+.player:nth-child(1){
+background:linear-gradient(145deg,#FF6B2B,#FF4C4C);
+color:white;
+font-weight:bold;
+}
+
+.player:nth-child(2){
+background:#FFE3D6;
+}
+
+.player:nth-child(3){
+background:#FFF1EB;
+}
+
+/* BUTTON */
+
+button{
+margin-top:35px;
+width:100%;
+max-width:420px;
+padding:16px;
+border:none;
+border-radius:30px;
+
+font-size:20px;
+font-weight:bold;
+
+cursor:pointer;
+
+background:linear-gradient(145deg,#FF6B2B,#FF4C4C);
+color:white;
+
+box-shadow:0 12px 35px rgba(255,107,43,0.35);
+transition:0.25s;
+}
+
+button:hover{
+transform:scale(1.04);
+box-shadow:0 15px 40px rgba(255,76,76,0.6);
+}
+
+/* ANIMATION */
+
+@keyframes fadeSlide{
+
+0%{
+opacity:0;
+transform:translateY(25px);
+}
+
+100%{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+body{
+padding:25px 15px;
+}
+
+h1{
+font-size:28px;
+margin-bottom:25px;
 }
 
 .player{
-font-size:22px;
-margin:10px;
+font-size:20px;
+padding:20px;
+}
+
+button{
+font-size:18px;
+padding:15px;
+}
+
 }
 
 </style>
@@ -25,14 +158,14 @@ margin:10px;
 
 <body>
 
-<h1>🏆 Squat Leaderboard</h1>
+<h1>🏆 Leaderboard</h1>
 
 <div id="leaderboard"></div>
 
 <br>
 
-<button onclick="location.href='profile.html'">
-Back to Profile
+<button onclick="location.href='index.html'">
+Home
 </button>
 
 <script type="module" src="leaderboard.js"></script>
