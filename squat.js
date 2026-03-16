@@ -75,18 +75,19 @@ function calculateAngle(A, B, C) {
 }
 
 function onResults(results) {
+
+  // Still draw the camera frame so the canvas keeps updating
   canvasCtx.save();
   canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
   canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
   if (results.poseLandmarks && running) {
-    drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, { color: '#00FF00', lineWidth: 4 });
-    drawLandmarks(canvasCtx, results.poseLandmarks, { color: '#FF0000', lineWidth: 2 });
 
     // Squat detection using knees
     const leftHip = results.poseLandmarks[23];
     const leftKnee = results.poseLandmarks[25];
     const leftAnkle = results.poseLandmarks[27];
+
     const rightHip = results.poseLandmarks[24];
     const rightKnee = results.poseLandmarks[26];
     const rightAnkle = results.poseLandmarks[28];
@@ -102,6 +103,7 @@ function onResults(results) {
     if (avgAngle > 150 && squatStage === "down") {
       squatStage = "up";
       reps++;
+
       document.getElementById("reps").innerText = `Reps: ${reps}`;
 
       if (repSound) {
