@@ -19,16 +19,15 @@ color:#222222;
 min-height:100vh;
 display:flex;
 flex-direction:column;
-align-items:center;
-padding:35px 18px;
+padding:30px 20px;
 }
 
 /* TITLE */
 
 h1{
-font-size:32px;
+font-size:36px;
 font-weight:700;
-margin-bottom:30px;
+margin-bottom:40px;
 text-align:center;
 
 background:linear-gradient(90deg,#FF6B2B,#FF4C4C);
@@ -39,25 +38,25 @@ animation:fadeSlide 1s ease forwards;
 opacity:0;
 }
 
-/* STATS CONTAINER */
+/* STATS */
 
 .stat{
 width:100%;
-max-width:420px;
 background:#F5F5F5;
 
-padding:20px;
-margin:10px 0;
+padding:26px 24px;
+margin-bottom:18px;
 
-border-radius:16px;
+border-radius:20px;
 
-font-size:22px;
+font-size:26px;
 font-weight:600;
 
 display:flex;
 justify-content:space-between;
+align-items:center;
 
-box-shadow:0 10px 30px rgba(0,0,0,0.08);
+box-shadow:0 12px 35px rgba(0,0,0,0.08);
 
 animation:fadeSlide 1s ease forwards;
 }
@@ -66,15 +65,14 @@ animation:fadeSlide 1s ease forwards;
 
 button{
 width:100%;
-max-width:420px;
 
-padding:16px;
-margin-top:15px;
+padding:20px;
+margin-top:16px;
 
 border:none;
-border-radius:30px;
+border-radius:35px;
 
-font-size:18px;
+font-size:22px;
 font-weight:bold;
 
 cursor:pointer;
@@ -88,7 +86,7 @@ transition:0.25s;
 }
 
 button:hover{
-transform:scale(1.04);
+transform:scale(1.03);
 box-shadow:0 15px 40px rgba(255,76,76,0.6);
 }
 
@@ -120,19 +118,23 @@ transform:translateY(0);
 
 @media(max-width:600px){
 
+body{
+padding:25px 18px;
+}
+
 h1{
-font-size:26px;
-margin-bottom:25px;
+font-size:30px;
+margin-bottom:30px;
 }
 
 .stat{
-font-size:20px;
-padding:18px;
+font-size:22px;
+padding:22px;
 }
 
 button{
-font-size:17px;
-padding:15px;
+font-size:20px;
+padding:18px;
 }
 
 }
@@ -151,8 +153,9 @@ padding:15px;
 
 <br>
 
-<button onclick="location.href='index.html'">Home</button>
-
+<button onclick="location.href='pushup.html'">Start Pushups</button>
+<button onclick="location.href='squat.html'">Start Squats</button>
+<button onclick="location.href='plank.html'">Start Plank</button>
 
 <br><br>
 
