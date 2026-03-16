@@ -58,9 +58,7 @@ box-shadow:0 12px 35px rgba(0,0,0,0.15);
 /* CANVAS OUTPUT */
 
 #output{
-position:absolute;
-top:0;
-left:0;
+display:none;
 }
 
 /* BUTTON AREA */
