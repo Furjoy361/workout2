@@ -6,6 +6,10 @@ let running = false;
 let squatStage = null; // "down" or "up"
 let reps = 0;
 
+// cooldown to prevent double counting
+let lastRepTime = 0;
+const repCooldown = 400;
+
 // Load rep sound after user clicks START
 let repSound = null;
 
@@ -21,7 +25,6 @@ document.getElementById("startBtn").onclick = function() {
 
     document.getElementById("reps").innerText = `Reps: ${reps}`;
 
-    // Load sound after first user interaction
     repSound = new Audio('assets/1.mp3');
   }
 }
@@ -33,14 +36,12 @@ document.getElementById("stopBtn").onclick = async function() {
   const user = auth.currentUser;
 
   if (user) {
-    // Save squat data
     await addSquats(user.uid, reps, user.displayName || "Player");
     console.log("Squats and name saved to database");
   }
 
   alert(`You completed ${reps} squats!`);
 
-  // Redirect to profile
   window.location.href = "profile.html";
 }
 
@@ -55,14 +56,15 @@ pose.setOptions({
   modelComplexity: 1,
   smoothLandmarks: true,
   enableSegmentation: false,
-  minDetectionConfidence: 0.5,
-  minTrackingConfidence: 0.5
+  minDetectionConfidence: 0.6,
+  minTrackingConfidence: 0.6
 });
 
 pose.onResults(onResults);
 
 // -------------------- SQUAT REPS COUNT --------------------
 function calculateAngle(A, B, C) {
+
   const AB = { x: B.x - A.x, y: B.y - A.y };
   const CB = { x: B.x - C.x, y: B.y - C.y };
 
@@ -80,7 +82,6 @@ function onResults(results) {
 
   if (results.poseLandmarks && running) {
 
-    // Squat detection using knees
     const leftHip = results.poseLandmarks[23];
     const leftKnee = results.poseLandmarks[25];
     const leftAnkle = results.poseLandmarks[27];
@@ -94,26 +95,34 @@ function onResults(results) {
 
     const avgAngle = (leftAngle + rightAngle) / 2;
 
-    if (avgAngle < 100 && squatStage !== "down") {
+    const now = Date.now();
+
+    // Deep squat detection
+    if (avgAngle < 85 && squatStage !== "down") {
       squatStage = "down";
     }
 
-    if (avgAngle > 150 && squatStage === "down") {
-      squatStage = "up";
-      reps++;
+    // Full stand detection
+    if (avgAngle > 165 && squatStage === "down") {
 
-      document.getElementById("reps").innerText = `Reps: ${reps}`;
+      if (now - lastRepTime > repCooldown) {
 
-      if (repSound) {
-        repSound.currentTime = 0;
-        repSound.play();
+        squatStage = "up";
+        reps++;
+        lastRepTime = now;
+
+        document.getElementById("reps").innerText = `Reps: ${reps}`;
+
+        if (repSound) {
+          repSound.currentTime = 0;
+          repSound.play();
+        }
+
+        document.body.style.backgroundColor = "rgba(0,255,0,0.4)";
+        setTimeout(() => {
+          document.body.style.backgroundColor = "";
+        }, 300);
       }
-
-      // Flash background green briefly
-      document.body.style.backgroundColor = "rgba(0,255,0,0.4)";
-      setTimeout(() => {
-        document.body.style.backgroundColor = "";
-      }, 300);
     }
 
   }
