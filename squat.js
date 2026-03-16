@@ -3,30 +3,41 @@ import { auth } from "./firebase.js";
 
 // -------------------- REPS LOGIC --------------------
 let running = false;
-let squatStage = null; // "down" or "up"
+let squatStage = null;
 let reps = 0;
 
-// cooldown to prevent double counting
-let lastRepTime = 0;
-const repCooldown = 400;
-
-// Load rep sound after user clicks START
 let repSound = null;
+
+// stability filtering
+let angleHistory = [];
+const historySize = 5;
+
+let lastRepTime = 0;
+const repCooldown = 600;
+
+let squatStartTime = 0;
+const minSquatTime = 300;
 
 // Show initial reps
 document.getElementById("reps").innerText = `Reps: ${reps}`;
 
 // -------------------- START / STOP --------------------
 document.getElementById("startBtn").onclick = function() {
+
   if (!running) {
+
     reps = 0;
     squatStage = null;
     running = true;
 
+    angleHistory = [];
+
     document.getElementById("reps").innerText = `Reps: ${reps}`;
 
     repSound = new Audio('assets/1.mp3');
+
   }
+
 }
 
 document.getElementById("stopBtn").onclick = async function() {
@@ -36,16 +47,19 @@ document.getElementById("stopBtn").onclick = async function() {
   const user = auth.currentUser;
 
   if (user) {
+
     await addSquats(user.uid, reps, user.displayName || "Player");
-    console.log("Squats and name saved to database");
+    console.log("Squats saved");
+
   }
 
   alert(`You completed ${reps} squats!`);
 
   window.location.href = "profile.html";
+
 }
 
-// -------------------- MEDIA PIPE CAMERA & POSE --------------------
+// -------------------- MEDIA PIPE CAMERA --------------------
 const videoElement = document.getElementById('camera');
 
 const pose = new Pose({
@@ -56,13 +70,13 @@ pose.setOptions({
   modelComplexity: 1,
   smoothLandmarks: true,
   enableSegmentation: false,
-  minDetectionConfidence: 0.6,
-  minTrackingConfidence: 0.6
+  minDetectionConfidence: 0.7,
+  minTrackingConfidence: 0.7
 });
 
 pose.onResults(onResults);
 
-// -------------------- SQUAT REPS COUNT --------------------
+// -------------------- ANGLE CALCULATION --------------------
 function calculateAngle(A, B, C) {
 
   const AB = { x: B.x - A.x, y: B.y - A.y };
@@ -76,8 +90,10 @@ function calculateAngle(A, B, C) {
   const angleRad = Math.acos(dot / (magAB * magCB));
 
   return angleRad * (180 / Math.PI);
+
 }
 
+// -------------------- SQUAT DETECTION --------------------
 function onResults(results) {
 
   if (results.poseLandmarks && running) {
@@ -95,20 +111,35 @@ function onResults(results) {
 
     const avgAngle = (leftAngle + rightAngle) / 2;
 
-    const now = Date.now();
+    // ---------------- SMOOTH ANGLE ----------------
+    angleHistory.push(avgAngle);
 
-    // Deep squat detection
-    if (avgAngle < 85 && squatStage !== "down") {
-      squatStage = "down";
+    if (angleHistory.length > historySize) {
+      angleHistory.shift();
     }
 
-    // Full stand detection
-    if (avgAngle > 165 && squatStage === "down") {
+    const smoothAngle = angleHistory.reduce((a,b)=>a+b)/angleHistory.length;
 
-      if (now - lastRepTime > repCooldown) {
+    const now = Date.now();
+
+    // ---------------- DOWN POSITION ----------------
+    if (smoothAngle < 85 && squatStage !== "down") {
+
+      squatStage = "down";
+      squatStartTime = now;
+
+    }
+
+    // ---------------- UP POSITION ----------------
+    if (smoothAngle > 165 && squatStage === "down") {
+
+      const squatDuration = now - squatStartTime;
+
+      if (squatDuration > minSquatTime && now - lastRepTime > repCooldown) {
 
         squatStage = "up";
         reps++;
+
         lastRepTime = now;
 
         document.getElementById("reps").innerText = `Reps: ${reps}`;
@@ -119,17 +150,20 @@ function onResults(results) {
         }
 
         document.body.style.backgroundColor = "rgba(0,255,0,0.4)";
-        setTimeout(() => {
-          document.body.style.backgroundColor = "";
-        }, 300);
+
+        setTimeout(()=>{
+          document.body.style.backgroundColor="";
+        },300);
+
       }
+
     }
 
   }
 
 }
 
-// -------------------- CAMERA START --------------------
+// -------------------- CAMERA --------------------
 const camera = new Camera(videoElement, {
   onFrame: async () => {
     await pose.send({ image: videoElement });
