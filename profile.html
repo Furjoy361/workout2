@@ -6,24 +6,135 @@
 
 <style>
 
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family: Arial, sans-serif;
+}
+
 body{
-background:#111;
-color:white;
-font-family:Arial;
+background:#FFFFFF;
+color:#222222;
+min-height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+padding:35px 18px;
+}
+
+/* TITLE */
+
+h1{
+font-size:32px;
+font-weight:700;
+margin-bottom:30px;
 text-align:center;
-padding-top:60px;
+
+background:linear-gradient(90deg,#FF6B2B,#FF4C4C);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+animation:fadeSlide 1s ease forwards;
+opacity:0;
+}
+
+/* STATS CONTAINER */
+
+.stat{
+width:100%;
+max-width:420px;
+background:#F5F5F5;
+
+padding:20px;
+margin:10px 0;
+
+border-radius:16px;
+
+font-size:22px;
+font-weight:600;
+
+display:flex;
+justify-content:space-between;
+
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+
+animation:fadeSlide 1s ease forwards;
+}
+
+/* WORKOUT BUTTONS */
+
+button{
+width:100%;
+max-width:420px;
+
+padding:16px;
+margin-top:15px;
+
+border:none;
+border-radius:30px;
+
+font-size:18px;
+font-weight:bold;
+
+cursor:pointer;
+
+background:linear-gradient(145deg,#FF6B2B,#FF4C4C);
+color:white;
+
+box-shadow:0 12px 35px rgba(255,107,43,0.35);
+
+transition:0.25s;
+}
+
+button:hover{
+transform:scale(1.04);
+box-shadow:0 15px 40px rgba(255,76,76,0.6);
+}
+
+/* LOGOUT BUTTON */
+
+#logout{
+background:#F5F5F5;
+color:#222222;
+box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* ANIMATION */
+
+@keyframes fadeSlide{
+
+0%{
+opacity:0;
+transform:translateY(25px);
+}
+
+100%{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+h1{
+font-size:26px;
+margin-bottom:25px;
 }
 
 .stat{
-font-size:22px;
-margin:15px;
+font-size:20px;
+padding:18px;
 }
 
 button{
-padding:12px 20px;
-margin:10px;
-font-size:16px;
-cursor:pointer;
+font-size:17px;
+padding:15px;
+}
+
 }
 
 </style>
