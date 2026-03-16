@@ -3,88 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Workout Selector</title>
-<style>
+<title>Hassang</title>
 
-/* Reset & basics */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  background: #111;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  text-align: center;
-}
+<link rel="stylesheet" href="homepage.css">
 
-/* Heading */
-h1 {
-  margin-bottom: 30px;
-  font-size: 2.5em;
-}
-
-/* Login button */
-.login-btn {
-  margin-bottom: 40px;
-  padding: 12px 25px;
-  background: #4285F4;
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
-  font-size: 1.1em;
-  transition: background 0.2s;
-}
-
-.login-btn:hover {
-  background: #5a95ff;
-}
-
-/* Circle container */
-.circle-container {
-  display: flex;
-  gap: 50px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-/* Circle buttons */
-.circle-btn {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: #ff3c3c;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-  color: white;
-  font-size: 1.5em;
-  font-weight: bold;
-  transition: transform 0.2s, background 0.2s;
-}
-
-.circle-btn:hover {
-  transform: scale(1.1);
-  background: #ff6060;
-}
-
-</style>
 </head>
+
 <body>
 
-<h1>🏋️ Workout Selector</h1>
+<!-- NAVBAR -->
 
-<!-- Login button -->
-<a href="login.html" class="login-btn">Login / Sign Up</a>
+<div class="navbar">
 
-<div class="circle-container">
-  <a href="pushup.html" class="circle-btn">Push-ups</a>
-  <a href="squat.html" class="circle-btn">Squats</a>
+<div class="logo">
+<img src="assets/logo2.png">
+<span>FitRival</span>
 </div>
+
+<div class="hamburger" onclick="toggleMenu()">☰</div>
+
+<div class="menu" id="menu">
+<a href="profile.html">👤 Profile</a>
+<a href="leaderboard.html">🏆 Leaderboard</a>
+<a href="login.html">🔑 Login / Sign Up</a>
+</div>
+
+</div>
+
+<div class="workouts">
+
+<a href="squat.html" class="workout">
+<img src="assets/squat.png" class="workout-icon">
+Squats
+</a>
+
+<a href="pushup.html" class="workout">
+<img src="assets/pushup.png" class="workout-icon">
+Push-ups
+</a>
+
+<a href="plank.html" class="workout">
+<img src="assets/plank.png" class="workout-icon">
+Plank
+</a>
+
+<a href="running.html" class="workout">
+<img src="assets/run.png" class="workout-icon">
+Running
+</a>
+
+</div>
+
+<script>
+
+function toggleMenu(){
+const menu=document.getElementById("menu");
+
+if(menu.style.display==="flex"){
+menu.style.display="none";
+}else{
+menu.style.display="flex";
+}
+}
+
+window.onclick=function(e){
+if(!e.target.matches('.hamburger')){
+const menu=document.getElementById("menu");
+menu.style.display="none";
+}
+}
+
+</script>
 
 </body>
 </html>
