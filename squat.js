@@ -33,7 +33,7 @@ document.getElementById("stopBtn").onclick = async function() {
   const user = auth.currentUser;
 
   if (user) {
-    // ✅ Pass user's display name to save it in Firestore
+    // Save squat data
     await addSquats(user.uid, reps, user.displayName || "Player");
     console.log("Squats and name saved to database");
   }
@@ -46,8 +46,6 @@ document.getElementById("stopBtn").onclick = async function() {
 
 // -------------------- MEDIA PIPE CAMERA & POSE --------------------
 const videoElement = document.getElementById('camera');
-const canvasElement = document.getElementById('output');
-const canvasCtx = canvasElement.getContext('2d');
 
 const pose = new Pose({
   locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
@@ -67,19 +65,18 @@ pose.onResults(onResults);
 function calculateAngle(A, B, C) {
   const AB = { x: B.x - A.x, y: B.y - A.y };
   const CB = { x: B.x - C.x, y: B.y - C.y };
+
   const dot = AB.x * CB.x + AB.y * CB.y;
+
   const magAB = Math.sqrt(AB.x * AB.x + AB.y * AB.y);
   const magCB = Math.sqrt(CB.x * CB.x + CB.y * CB.y);
+
   const angleRad = Math.acos(dot / (magAB * magCB));
+
   return angleRad * (180 / Math.PI);
 }
 
 function onResults(results) {
-
-  // Still draw the camera frame so the canvas keeps updating
-  canvasCtx.save();
-  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-  canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
   if (results.poseLandmarks && running) {
 
@@ -94,6 +91,7 @@ function onResults(results) {
 
     const leftAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
     const rightAngle = calculateAngle(rightHip, rightKnee, rightAnkle);
+
     const avgAngle = (leftAngle + rightAngle) / 2;
 
     if (avgAngle < 100 && squatStage !== "down") {
@@ -112,19 +110,21 @@ function onResults(results) {
       }
 
       // Flash background green briefly
-      document.body.style.backgroundColor = "rgba(0,255,0,0.5)";
+      document.body.style.backgroundColor = "rgba(0,255,0,0.4)";
       setTimeout(() => {
         document.body.style.backgroundColor = "";
-      }, 500);
+      }, 300);
     }
+
   }
 
-  canvasCtx.restore();
 }
 
 // -------------------- CAMERA START --------------------
 const camera = new Camera(videoElement, {
-  onFrame: async () => { await pose.send({ image: videoElement }); },
+  onFrame: async () => {
+    await pose.send({ image: videoElement });
+  },
   width: 640,
   height: 480
 });
