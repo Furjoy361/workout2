@@ -8,6 +8,9 @@
 
 <link rel="stylesheet" href="style.css">
 
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
 </head>
 
 <body>
@@ -17,8 +20,14 @@
 <div class="stat">Time: <span id="time">0:00</span></div>
 <div class="stat">Distance: <span id="distance">0.00</span> km</div>
 
+<!-- MAP -->
+<div id="map" style="height:300px; width:100%; margin:15px 0; border-radius:15px;"></div>
+
 <button id="startBtn">Start</button>
 <button id="stopBtn">Stop</button>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script type="module" src="running.js"></script>
 
