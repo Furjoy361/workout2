@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Plank Counter</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>Plank Counter</h1>
+
+<div id="timer">0:00</div>
+
+<!-- Camera -->
+<video id="camera" autoplay playsinline muted></video>
+<canvas id="output"></canvas>
+
+<!-- Anti-cheat button -->
+<button id="tapBtn" style="display:none;">TAP!</button>
+
+<button id="startBtn">START</button>
+<button id="stopBtn">STOP</button>
+
+<!-- MediaPipe Pose -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+
+<script type="module" src="plank.js"></script>
+
+</body>
+</html>
