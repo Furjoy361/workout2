@@ -9,11 +9,12 @@ let timer = null;
 
 let watchId = null;
 let lastPosition = null;
-let distance = 0; // in km
+let distance = 0;
 
 // MAP
 let map = null;
 let polyline = null;
+let marker = null;
 let path = [];
 
 // ---------------- UI ----------------
@@ -27,9 +28,10 @@ function updateTime() {
   timeEl.innerText = `${min}:${sec < 10 ? "0"+sec : sec}`;
 }
 
-// ---------------- DISTANCE CALC ----------------
+// ---------------- DISTANCE ----------------
 function getDistance(lat1, lon1, lat2, lon2) {
   const R = 6371;
+
   const dLat = (lat2 - lat1) * Math.PI/180;
   const dLon = (lon2 - lon1) * Math.PI/180;
 
@@ -46,6 +48,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
 
 // ---------------- INIT MAP ----------------
 function initMap(lat, lon) {
+
   map = L.map("map").setView([lat, lon], 16);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -53,6 +56,14 @@ function initMap(lat, lon) {
   }).addTo(map);
 
   polyline = L.polyline([], { weight: 5 }).addTo(map);
+
+  // 👇 ADD MARKER (so user sees location instantly)
+  marker = L.marker([lat, lon]).addTo(map);
+
+  // FIX RENDER
+  setTimeout(() => {
+    map.invalidateSize();
+  }, 200);
 }
 
 // ---------------- START ----------------
@@ -75,27 +86,39 @@ document.getElementById("startBtn").onclick = () => {
     updateTime();
   }, 1000);
 
-  // GPS TRACKING
+  // GPS
   watchId = navigator.geolocation.watchPosition(
+
     (pos) => {
 
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
+
+      console.log("GPS:", lat, lon); // DEBUG
 
       // INIT MAP FIRST TIME
       if (!map) {
         initMap(lat, lon);
       }
 
+      // SAFETY CHECK
+      if (!polyline || !map) return;
+
       // DRAW PATH
       path.push([lat, lon]);
       polyline.setLatLngs(path);
+
+      // MOVE MARKER
+      if (marker) {
+        marker.setLatLng([lat, lon]);
+      }
 
       // MOVE CAMERA
       map.setView([lat, lon]);
 
       // DISTANCE
       if (lastPosition) {
+
         const d = getDistance(
           lastPosition.lat,
           lastPosition.lon,
@@ -103,7 +126,6 @@ document.getElementById("startBtn").onclick = () => {
           lon
         );
 
-        // filter GPS noise (ignore tiny jumps)
         if (d > 0.001) {
           distance += d;
           distanceEl.innerText = distance.toFixed(2);
@@ -113,17 +135,19 @@ document.getElementById("startBtn").onclick = () => {
       lastPosition = { lat, lon };
 
     },
+
     (err) => {
+      console.error(err);
       alert("Location permission denied or error");
       stopRun();
     },
+
     {
       enableHighAccuracy: true,
       maximumAge: 0,
       timeout: 5000
     }
   );
-
 };
 
 // ---------------- STOP ----------------
@@ -136,7 +160,10 @@ async function stopRun() {
   running = false;
 
   clearInterval(timer);
-  navigator.geolocation.clearWatch(watchId);
+
+  if (watchId !== null) {
+    navigator.geolocation.clearWatch(watchId);
+  }
 
   const user = auth.currentUser;
 
@@ -148,7 +175,6 @@ async function stopRun() {
       runningDistance: increment(distance),
       runningTime: increment(seconds)
     }, { merge: true });
-
   }
 
   alert(`Run complete!\nDistance: ${distance.toFixed(2)} km\nTime: ${seconds}s`);
