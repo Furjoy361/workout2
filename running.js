@@ -57,10 +57,8 @@ function initMap(lat, lon) {
 
   polyline = L.polyline([], { weight: 5 }).addTo(map);
 
-  // 👇 ADD MARKER (so user sees location instantly)
   marker = L.marker([lat, lon]).addTo(map);
 
-  // FIX RENDER
   setTimeout(() => {
     map.invalidateSize();
   }, 200);
@@ -80,13 +78,11 @@ document.getElementById("startBtn").onclick = () => {
   updateTime();
   distanceEl.innerText = "0.00";
 
-  // TIMER
   timer = setInterval(() => {
     seconds++;
     updateTime();
   }, 1000);
 
-  // GPS
   watchId = navigator.geolocation.watchPosition(
 
     (pos) => {
@@ -94,29 +90,23 @@ document.getElementById("startBtn").onclick = () => {
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
 
-      console.log("GPS:", lat, lon); // DEBUG
+      console.log("GPS:", lat, lon);
 
-      // INIT MAP FIRST TIME
       if (!map) {
         initMap(lat, lon);
       }
 
-      // SAFETY CHECK
       if (!polyline || !map) return;
 
-      // DRAW PATH
       path.push([lat, lon]);
       polyline.setLatLngs(path);
 
-      // MOVE MARKER
       if (marker) {
         marker.setLatLng([lat, lon]);
       }
 
-      // MOVE CAMERA
       map.setView([lat, lon]);
 
-      // DISTANCE
       if (lastPosition) {
 
         const d = getDistance(
@@ -171,10 +161,10 @@ async function stopRun() {
 
     const userRef = doc(db, "users", user.uid);
 
- await setDoc(userRef, {
-  runningDistance: (distance || 0),
-  runningTime: (seconds || 0)
-}, { merge: true });
+    await setDoc(userRef, {
+      runningDistance: increment(distance || 0),
+      runningTime: increment(seconds || 0)
+    }, { merge: true });
   }
 
   alert(`Run complete!\nDistance: ${distance.toFixed(2)} km\nTime: ${seconds}s`);
