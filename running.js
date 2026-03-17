@@ -11,6 +11,11 @@ let watchId = null;
 let lastPosition = null;
 let distance = 0; // in km
 
+// MAP
+let map = null;
+let polyline = null;
+let path = [];
+
 // ---------------- UI ----------------
 const timeEl = document.getElementById("time");
 const distanceEl = document.getElementById("distance");
@@ -24,20 +29,30 @@ function updateTime() {
 
 // ---------------- DISTANCE CALC ----------------
 function getDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // km
+  const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI/180;
   const dLon = (lon2 - lon1) * Math.PI/180;
 
   const a =
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.sin(dLat/2) ** 2 +
     Math.cos(lat1 * Math.PI/180) *
     Math.cos(lat2 * Math.PI/180) *
-    Math.sin(dLon/2) *
-    Math.sin(dLon/2);
+    Math.sin(dLon/2) ** 2;
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
   return R * c;
+}
+
+// ---------------- INIT MAP ----------------
+function initMap(lat, lon) {
+  map = L.map("map").setView([lat, lon], 16);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap"
+  }).addTo(map);
+
+  polyline = L.polyline([], { weight: 5 }).addTo(map);
 }
 
 // ---------------- START ----------------
@@ -49,6 +64,7 @@ document.getElementById("startBtn").onclick = () => {
   seconds = 0;
   distance = 0;
   lastPosition = null;
+  path = [];
 
   updateTime();
   distanceEl.innerText = "0.00";
@@ -66,6 +82,19 @@ document.getElementById("startBtn").onclick = () => {
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
 
+      // INIT MAP FIRST TIME
+      if (!map) {
+        initMap(lat, lon);
+      }
+
+      // DRAW PATH
+      path.push([lat, lon]);
+      polyline.setLatLngs(path);
+
+      // MOVE CAMERA
+      map.setView([lat, lon]);
+
+      // DISTANCE
       if (lastPosition) {
         const d = getDistance(
           lastPosition.lat,
@@ -74,8 +103,11 @@ document.getElementById("startBtn").onclick = () => {
           lon
         );
 
-        distance += d;
-        distanceEl.innerText = distance.toFixed(2);
+        // filter GPS noise (ignore tiny jumps)
+        if (d > 0.001) {
+          distance += d;
+          distanceEl.innerText = distance.toFixed(2);
+        }
       }
 
       lastPosition = { lat, lon };
@@ -86,7 +118,9 @@ document.getElementById("startBtn").onclick = () => {
       stopRun();
     },
     {
-      enableHighAccuracy: true
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 5000
     }
   );
 
