@@ -1,51 +1,59 @@
 import { db } from "./firebase.js";
 
 import {
-collection,
-getDocs,
-query,
-orderBy,
-limit
+  collection,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const leaderboard = document.getElementById("leaderboard");
 
-async function loadLeaderboard(){
+async function loadLeaderboard() {
 
   leaderboard.innerHTML = "";
 
-  const q = query(
-    collection(db,"users"),
-    orderBy("squats","desc"),
-    limit(10)
-  );
+  const usersSnapshot = await getDocs(collection(db, "users"));
 
-  const querySnapshot = await getDocs(q);
+  let users = [];
 
-  let rank = 1;
-
-  querySnapshot.forEach((doc)=>{
-
+  usersSnapshot.forEach((doc) => {
     const data = doc.data();
 
-    // Fix undefined name
     const name = data.name || "Player";
-
-    // Fix undefined squats
+    const pushups = data.pushups || 0;
     const squats = data.squats || 0;
+    const plank = data.plank || 0;
+    const running = data.running || 0;
 
-    const div = document.createElement("div");
+    const overall = pushups + squats + plank + running; // total points
 
-    div.className = "player";
-
-    div.innerText = `${rank}. ${name} — ${squats} squats`;
-
-    leaderboard.appendChild(div);
-
-    rank++;
-
+    users.push({
+      name,
+      pushups,
+      squats,
+      plank,
+      running,
+      overall
+    });
   });
 
+  // Sort users by overall points descending
+  users.sort((a, b) => b.overall - a.overall);
+
+  // Display top 10
+  const topUsers = users.slice(0, 10);
+
+  topUsers.forEach((user, index) => {
+
+    const div = document.createElement("div");
+    div.className = "player";
+
+    div.innerHTML = `
+      ${index + 1}. ${user.name} — 
+      Push-ups: ${user.pushups} | Squats: ${user.squats} | Plank: ${user.plank} | Running: ${user.running} | Overall: ${user.overall}
+    `;
+
+    leaderboard.appendChild(div);
+  });
 }
 
 loadLeaderboard();
