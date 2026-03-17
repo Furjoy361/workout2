@@ -206,6 +206,9 @@ document.getElementById("pushups").innerText = data.pushups || 0;
 document.getElementById("squats").innerText = data.squats || 0;
 document.getElementById("plank").innerText = data.plank || 0;
 
+document.getElementById("running").innerText =
+  (data.runningDistance || 0).toFixed(2);
+
 }
 
 }
