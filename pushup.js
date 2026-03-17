@@ -47,12 +47,13 @@ document.getElementById("stopBtn").onclick = async function() {
   const user = auth.currentUser;
 
   if (user) {
-    await addSquats(user.uid, reps, user.displayName || "Player"); 
-    // later change to addPushups
+    await addSquats(user.uid, reps, user.displayName || "Player");
   }
 
-  alert(`You completed ${reps} push-ups!`);
+  // Show result FIRST
+  alert(`You did ${reps} push-ups 💪`);
 
+  // Then redirect
   window.location.href = "profile.html";
 
 }
