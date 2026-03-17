@@ -171,10 +171,10 @@ async function stopRun() {
 
     const userRef = doc(db, "users", user.uid);
 
-    await setDoc(userRef, {
-      runningDistance: increment(distance),
-      runningTime: increment(seconds)
-    }, { merge: true });
+ await setDoc(userRef, {
+  runningDistance: (distance || 0),
+  runningTime: (seconds || 0)
+}, { merge: true });
   }
 
   alert(`Run complete!\nDistance: ${distance.toFixed(2)} km\nTime: ${seconds}s`);
