@@ -1,4 +1,4 @@
-import { addSquats } from "./database.js"; // you can later rename to addPushups
+import { addPushups } from "./database.js"; // updated to push-ups
 import { auth } from "./firebase.js";
 
 // -------------------- REPS LOGIC --------------------
@@ -47,7 +47,8 @@ document.getElementById("stopBtn").onclick = async function() {
   const user = auth.currentUser;
 
   if (user) {
-    await addSquats(user.uid, reps, user.displayName || "Player");
+    // Save push-ups to Firebase
+    await addPushups(user.uid, reps, user.displayName || "Player");
   }
 
   // Show result FIRST
