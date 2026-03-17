@@ -18,3 +18,21 @@ export async function addSquats(uid, reps, name) {
 
   console.log("Squats and name saved to database");
 }
+
+/**
+ * Add push-ups for a user and save their name if not already present
+ * @param {string} uid - Firebase user UID
+ * @param {number} reps - Number of push-ups completed
+ * @param {string} name - User's display name
+ */
+export async function addPushups(uid, reps, name) {
+
+  const userRef = doc(db, "users", uid);
+
+  await setDoc(userRef, {
+    pushups: increment(reps),
+    name: name
+  }, { merge: true }); // ✅ merge ensures we don't overwrite the entire document
+
+  console.log("Push-ups and name saved to database");
+}
