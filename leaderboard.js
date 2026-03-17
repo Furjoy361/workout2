@@ -22,9 +22,10 @@ async function loadLeaderboard() {
     const pushups = data.pushups || 0;
     const squats = data.squats || 0;
     const plank = data.plank || 0;
-    const running = data.running || 0;
+    const running = data.runningDistance || 0;
 
-    const overall = pushups + squats + plank + running; // total points
+    // 🔥 FIX: balance scoring (running is km, others are reps/time)
+    const overall = pushups + squats + plank + (running * 100);
 
     users.push({
       name,
@@ -49,7 +50,11 @@ async function loadLeaderboard() {
 
     div.innerHTML = `
       ${index + 1}. ${user.name} — 
-      Push-ups: ${user.pushups} | Squats: ${user.squats} | Plank: ${user.plank} | Running: ${user.running} | Overall: ${user.overall}
+      Push-ups: ${user.pushups} | 
+      Squats: ${user.squats} | 
+      Plank: ${user.plank} | 
+      Running: ${user.running.toFixed(2)} km | 
+      Overall: ${user.overall.toFixed(0)}
     `;
 
     leaderboard.appendChild(div);
